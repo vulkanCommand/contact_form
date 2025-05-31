@@ -1,0 +1,488 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Contact Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #dbeafe 0%, #ffffff 50%, #faf5ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 32rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: all 1s ease-in-out;
+        }
+
+        .container.form-shrinking {
+            animation: formShrink 1s ease-in-out forwards;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem 2rem 1rem;
+        }
+
+        .icon-container {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, #3b82f6, #9333ea);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .mail-icon {
+            width: 2rem;
+            height: 2rem;
+            color: white;
+        }
+
+        .title {
+            font-size: 1.875rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #2563eb, #9333ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .description {
+            font-size: 1.125rem;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .content {
+            padding: 0 2rem 2rem;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .input, .textarea {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .input:focus, .textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .textarea {
+            min-height: 7.5rem;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6, #9333ea);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f3f4f6;
+            margin-top: 1.5rem;
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .footer-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-link:hover {
+            color: #1d4ed8;
+        }
+
+        /* Flying Bird Animation */
+        .flying-bird {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            pointer-events: none;
+            animation: birdFly 4s ease-out forwards;
+        }
+
+        .bird-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: birdBob 0.3s ease-in-out infinite;
+        }
+
+        .wing {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .wing-left {
+            animation: wingFlapLeft 0.4s ease-in-out infinite;
+            transform-origin: right center;
+        }
+
+        .wing-right {
+            animation: wingFlapRight 0.4s ease-in-out infinite;
+            transform-origin: left center;
+        }
+
+        .bird-body {
+            margin: 0 0.25rem;
+            filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.3));
+            color: #2563eb;
+        }
+
+        .spinner {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid white;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes formShrink {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            70% {
+                transform: scale(0.1) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0.05) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes birdFly {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+                opacity: 1;
+            }
+            15% {
+                transform: translate(-30px, -80px) rotate(-10deg);
+                opacity: 1;
+            }
+            30% {
+                transform: translate(50px, -150px) rotate(5deg);
+                opacity: 0.9;
+            }
+            45% {
+                transform: translate(150px, -180px) rotate(-5deg);
+                opacity: 0.8;
+            }
+            60% {
+                transform: translate(280px, -220px) rotate(10deg);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translate(420px, -280px) rotate(-8deg);
+                opacity: 0.4;
+            }
+            90% {
+                transform: translate(580px, -350px) rotate(15deg);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(750px, -450px) rotate(20deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes wingFlapLeft {
+            0% {
+                transform: rotateY(0deg) rotateZ(-20deg);
+            }
+            25% {
+                transform: rotateY(-30deg) rotateZ(-45deg);
+            }
+            50% {
+                transform: rotateY(0deg) rotateZ(-20deg);
+            }
+            75% {
+                transform: rotateY(30deg) rotateZ(5deg);
+            }
+            100% {
+                transform: rotateY(0deg) rotateZ(-20deg);
+            }
+        }
+
+        @keyframes wingFlapRight {
+            0% {
+                transform: rotateY(0deg) rotateZ(20deg);
+            }
+            25% {
+                transform: rotateY(30deg) rotateZ(45deg);
+            }
+            50% {
+                transform: rotateY(0deg) rotateZ(20deg);
+            }
+            75% {
+                transform: rotateY(-30deg) rotateZ(-5deg);
+            }
+            100% {
+                transform: rotateY(0deg) rotateZ(20deg);
+            }
+        }
+
+        @keyframes birdBob {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 1.5rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="contactForm">
+        <div class="header">
+            <div class="icon-container">
+                <svg class="mail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <h1 class="title">Get In Touch</h1>
+            <p class="description">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+        </div>
+
+        <div class="content">
+            <form class="form" id="contactFormElement">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="label" for="firstName">First Name</label>
+                        <input class="input" type="text" id="firstName" name="firstName" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="label" for="lastName">Last Name</label>
+                        <input class="input" type="text" id="lastName" name="lastName" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label" for="email">Email Address</label>
+                    <input class="input" type="email" id="email" name="email" placeholder="john.doe@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="label" for="subject">Subject</label>
+                    <input class="input" type="text" id="subject" name="subject" placeholder="How can we help you?" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="label" for="message">Message</label>
+                    <textarea class="textarea" id="message" name="message" placeholder="Tell us more about your inquiry..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span id="btnText">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                        Send Message
+                    </span>
+                    <span id="btnLoading" class="hidden">
+                        <div class="spinner"></div>
+                        Sending...
+                    </span>
+                </button>
+            </form>
+
+            <div class="footer">
+                <p class="footer-text">
+                    Or reach us directly at 
+                    <a href="mailto:hello@company.com" class="footer-link">hello@company.com</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isSubmitting = false;
+
+        document.getElementById('contactFormElement').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (isSubmitting) return;
+            
+            isSubmitting = true;
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoading = document.getElementById('btnLoading');
+            const contactForm = document.getElementById('contactForm');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+            
+            // Start form shrinking animation
+            setTimeout(() => {
+                contactForm.classList.add('form-shrinking');
+            }, 500);
+            
+            // Start bird flying animation
+            setTimeout(() => {
+                createFlyingBird();
+            }, 1300);
+            
+            // Reset everything after animation
+            setTimeout(() => {
+                contactForm.classList.remove('form-shrinking');
+                submitBtn.disabled = false;
+                btnText.classList.remove('hidden');
+                btnLoading.classList.add('hidden');
+                isSubmitting = false;
+                
+                // Reset form
+                document.getElementById('contactFormElement').reset();
+                
+                // Show success message (optional)
+                alert('Message sent successfully! 🐦');
+            }, 6000);
+        });
+
+        function createFlyingBird() {
+            const birdContainer = document.createElement('div');
+            birdContainer.className = 'flying-bird';
+            
+            birdContainer.innerHTML = `
+                <div class="bird-container">
+                    <div class="wing wing-left">
+                        <svg width="20" height="16" viewBox="0 0 20 16">
+                            <path d="M2 8 C2 4, 8 2, 18 6 C18 8, 12 12, 2 8 Z" fill="#3B82F6" />
+                        </svg>
+                    </div>
+                    <div class="bird-body">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <div class="wing wing-right">
+                        <svg width="20" height="16" viewBox="0 0 20 16">
+                            <path d="M18 8 C18 4, 12 2, 2 6 C2 8, 8 12, 18 8 Z" fill="#3B82F6" />
+                        </svg>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(birdContainer);
+            
+            // Remove bird after animation
+            setTimeout(() => {
+                if (birdContainer.parentNode) {
+                    birdContainer.parentNode.removeChild(birdContainer);
+                }
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
